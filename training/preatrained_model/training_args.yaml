@@ -1,0 +1,563 @@
+## Training Arguments
+
+
+# The output directory where the model predictions and checkpoints will be written.
+output_dir:  # (`str`, *optional*, defaults to `"trainer_output"`)
+# If `True`, overwrite the content of the output directory. Use this to continue training if `output_dir`
+# points to a checkpoint directory.
+overwrite_output_dir: false # (`bool`, *optional*, defaults to `False`)
+# Whether to run training or not. This argument is not directly used by [`Trainer`], it's intended to be used
+# by your training/evaluation scripts instead. See the [example
+# scripts](https://github.com/huggingface/transformers/tree/main/examples) for more details.
+do_train: false # (`bool`, *optional*, defaults to `False`)
+# Whether to run evaluation on the validation set or not. Will be set to `True` if `eval_strategy` is
+# different from `"no"`. This argument is not directly used by [`Trainer`], it's intended to be used by your
+# training/evaluation scripts instead. See the [example
+# scripts](https://github.com/huggingface/transformers/tree/main/examples) for more details.
+do_eval: false # (`bool`, *optional*)
+# Whether to run predictions on the test set or not. This argument is not directly used by [`Trainer`], it's
+# intended to be used by your training/evaluation scripts instead. See the [example
+# scripts](https://github.com/huggingface/transformers/tree/main/examples) for more details.
+do_predict: false # (`bool`, *optional*, defaults to `False`)
+# The evaluation strategy to adopt during training. Possible values are:
+
+# - `"no"`: No evaluation is done during training.
+# - `"steps"`: Evaluation is done (and logged) every `eval_steps`.
+# - `"epoch"`: Evaluation is done at the end of each epoch.
+eval_strategy: no # (`str` or [`~trainer_utils.IntervalStrategy`], *optional*, defaults to `"no"`)
+# When performing evaluation and generating predictions, only returns the loss.
+prediction_loss_only: false # (`bool`, *optional*, defaults to `False`)
+# The batch size per device accelerator core/CPU for training.
+per_device_train_batch_size: 8 # (`int`, *optional*, defaults to 8)
+# The batch size per device accelerator core/CPU for evaluation.
+per_device_eval_batch_size: 8 # (`int`, *optional*, defaults to 8)
+# Number of updates steps to accumulate the gradients for, before performing a backward/update pass.
+
+# <Tip warning={true}>
+
+# When using gradient accumulation, one step is counted as one step with backward pass. Therefore, logging,
+# evaluation, save will be conducted every `gradient_accumulation_steps * xxx_step` training examples.
+
+# </Tip>
+gradient_accumulation_steps: 1 # (`int`, *optional*, defaults to 1)
+# Number of predictions steps to accumulate the output tensors for, before moving the results to the CPU. If
+# left unset, the whole predictions are accumulated on the device accelerator before being moved to the CPU (faster but
+# requires more memory).
+eval_accumulation_steps: # (`int`, *optional*)
+# Number of epochs or steps to wait for before the first evaluation can be performed, depending on the
+# eval_strategy.
+eval_delay: 0 # (`float`, *optional*)
+# Number of steps to wait before calling `torch.<device>.empty_cache()`. If left unset or set to None, cache will not be emptied.
+
+# <Tip>
+
+# This can help avoid CUDA out-of-memory errors by lowering peak VRAM usage at a cost of about [10% slower performance](https://github.com/huggingface/transformers/issues/31372).
+
+# </Tip>
+torch_empty_cache_steps: # (`int`, *optional*)
+# The initial learning rate for [`AdamW`] optimizer.
+learning_rate: 5e-05 # (`float`, *optional*, defaults to 5e-5)
+# The weight decay to apply (if not zero) to all layers except all bias and LayerNorm weights in [`AdamW`]
+# optimizer.
+weight_decay: 0.0 # (`float`, *optional*, defaults to 0)
+# The beta1 hyperparameter for the [`AdamW`] optimizer.
+adam_beta1: 0.9 # (`float`, *optional*, defaults to 0.9)
+# The beta2 hyperparameter for the [`AdamW`] optimizer.
+adam_beta2: 0.999 # (`float`, *optional*, defaults to 0.999)
+# The epsilon hyperparameter for the [`AdamW`] optimizer.
+adam_epsilon: 1e-08 # (`float`, *optional*, defaults to 1e-8)
+# Maximum gradient norm (for gradient clipping).
+max_grad_norm: 1.0 # (`float`, *optional*, defaults to 1.0)
+# Total number of training epochs to perform (if not an integer, will perform the decimal part percents of
+# the last epoch before stopping training).
+num_train_epochs: 3.0 # (`float`, *optional*, defaults to 3.0)
+# If set to a positive number, the total number of training steps to perform. Overrides `num_train_epochs`.
+# For a finite dataset, training is reiterated through the dataset (if all data is exhausted) until
+# `max_steps` is reached.
+max_steps: -1 # (`int`, *optional*, defaults to -1)
+# The scheduler type to use. See the documentation of [`SchedulerType`] for all possible values.
+lr_scheduler_type: linear # (`str` or [`SchedulerType`], *optional*, defaults to `"linear"`)
+# The extra arguments for the lr_scheduler. See the documentation of each scheduler for possible values.
+lr_scheduler_kwargs: {} # ('dict', *optional*, defaults to {})
+# Ratio of total training steps used for a linear warmup from 0 to `learning_rate`.
+warmup_ratio: 0.0 # (`float`, *optional*, defaults to 0.0)
+# Number of steps used for a linear warmup from 0 to `learning_rate`. Overrides any effect of `warmup_ratio`.
+warmup_steps: 0 # (`int`, *optional*, defaults to 0)
+# Logger log level to use on the main process. Possible choices are the log levels as strings: 'debug',
+# 'info', 'warning', 'error' and 'critical', plus a 'passive' level which doesn't set anything and keeps the
+# current log level for the Transformers library (which will be `"warning"` by default).
+log_level: passive # (`str`, *optional*, defaults to `passive`)
+# Logger log level to use on replicas. Same choices as `log_level`"
+log_level_replica: warning # (`str`, *optional*, defaults to `"warning"`)
+# In multinode distributed training, whether to log using `log_level` once per node, or only on the main
+# node.
+log_on_each_node: true # (`bool`, *optional*, defaults to `True`)
+# [TensorBoard](https://www.tensorflow.org/tensorboard) log directory. Will default to
+# *output_dir/runs/**CURRENT_DATETIME_HOSTNAME***.
+logging_dir: # (`str`, *optional*)
+# The logging strategy to adopt during training. Possible values are:
+
+# - `"no"`: No logging is done during training.
+# - `"epoch"`: Logging is done at the end of each epoch.
+# - `"steps"`: Logging is done every `logging_steps`.
+logging_strategy: steps # (`str` or [`~trainer_utils.IntervalStrategy`], *optional*, defaults to `"steps"`)
+# Whether to log the first `global_step` or not.
+logging_first_step: false # (`bool`, *optional*, defaults to `False`)
+# Number of update steps between two logs if `logging_strategy="steps"`. Should be an integer or a float in
+# range `[0,1)`. If smaller than 1, will be interpreted as ratio of total training steps.
+logging_steps: 500 # (`int` or `float`, *optional*, defaults to 500)
+# Whether to filter `nan` and `inf` losses for logging. If set to `True` the loss of every step that is `nan`
+# or `inf` is filtered and the average loss of the current logging window is taken instead.
+
+# <Tip>
+
+# `logging_nan_inf_filter` only influences the logging of loss values, it does not change the behavior the
+# gradient is computed or applied to the model.
+
+# </Tip>
+logging_nan_inf_filter: true # (`bool`, *optional*, defaults to `True`)
+# The checkpoint save strategy to adopt during training. Possible values are:
+
+# - `"no"`: No save is done during training.
+# - `"epoch"`: Save is done at the end of each epoch.
+# - `"steps"`: Save is done every `save_steps`.
+# - `"best"`: Save is done whenever a new `best_metric` is achieved.
+
+# If `"epoch"` or `"steps"` is chosen, saving will also be performed at the
+# very end of training, always.
+save_strategy: steps # (`str` or [`~trainer_utils.SaveStrategy`], *optional*, defaults to `"steps"`)
+# Number of updates steps before two checkpoint saves if `save_strategy="steps"`. Should be an integer or a
+# float in range `[0,1)`. If smaller than 1, will be interpreted as ratio of total training steps.
+save_steps: 500 # (`int` or `float`, *optional*, defaults to 500)
+# If a value is passed, will limit the total amount of checkpoints. Deletes the older checkpoints in
+# `output_dir`. When `load_best_model_at_end` is enabled, the "best" checkpoint according to
+# `metric_for_best_model` will always be retained in addition to the most recent ones. For example, for
+# `save_total_limit=5` and `load_best_model_at_end`, the four last checkpoints will always be retained
+# alongside the best model. When `save_total_limit=1` and `load_best_model_at_end`, it is possible that two
+# checkpoints are saved: the last one and the best one (if they are different).
+save_total_limit: # (`int`, *optional*)
+# Use [safetensors](https://huggingface.co/docs/safetensors) saving and loading for state dicts instead of
+# default `torch.load` and `torch.save`.
+save_safetensors: true # (`bool`, *optional*, defaults to `True`)
+# When doing multi-node distributed training, whether to save models and checkpoints on each node, or only on
+# the main one.
+
+# This should not be activated when the different nodes use the same storage as the files will be saved with
+# the same names for each node.
+save_on_each_node: false # (`bool`, *optional*, defaults to `False`)
+# When checkpointing, whether to only save the model, or also the optimizer, scheduler & rng state.
+# Note that when this is true, you won't be able to resume training from checkpoint.
+# This enables you to save storage by not storing the optimizer, scheduler & rng state.
+# You can only load the model using `from_pretrained` with this option set to `True`.
+save_only_model: false # (`bool`, *optional*, defaults to `False`)
+# Whether to restore the callback states from the checkpoint. If `True`, will override
+# callbacks passed to the `Trainer` if they exist in the checkpoint."
+restore_callback_states_from_checkpoint: false # (`bool`, *optional*, defaults to `False`)
+# Whether or not to use cpu. If set to False, we will use cuda or mps device if available.
+use_cpu: false # (`bool`, *optional*, defaults to `False`)
+# Random seed that will be set at the beginning of training. To ensure reproducibility across runs, use the
+# [`~Trainer.model_init`] function to instantiate the model if it has some randomly initialized parameters.
+seed: 42 # (`int`, *optional*, defaults to 42)
+# Random seed to be used with data samplers. If not set, random generators for data sampling will use the
+# same seed as `seed`. This can be used to ensure reproducibility of data sampling, independent of the model
+# seed.
+data_seed: # (`int`, *optional*)
+# Whether or not to use PyTorch jit trace for inference.
+jit_mode_eval: false # (`bool`, *optional*, defaults to `False`)
+# Use Intel extension for PyTorch when it is available. [IPEX
+# installation](https://github.com/intel/intel-extension-for-pytorch).
+use_ipex: false # (`bool`, *optional*, defaults to `False`)
+# Whether to use bf16 16-bit (mixed) precision training instead of 32-bit training. Requires Ampere or higher
+# NVIDIA architecture or using CPU (use_cpu) or Ascend NPU. This is an experimental API and it may change.
+bf16: false # (`bool`, *optional*, defaults to `False`)
+# Whether to use fp16 16-bit (mixed) precision training instead of 32-bit training.
+fp16: false # (`bool`, *optional*, defaults to `False`)
+# For `fp16` training, Apex AMP optimization level selected in ['O0', 'O1', 'O2', and 'O3']. See details on
+# the [Apex documentation](https://nvidia.github.io/apex/amp).
+fp16_opt_level: O1 # (`str`, *optional*, defaults to 'O1')
+# This argument is deprecated. Use `half_precision_backend` instead.
+fp16_backend: auto # (`str`, *optional*, defaults to `"auto"`)
+# The backend to use for mixed precision training. Must be one of `"auto", "apex", "cpu_amp"`. `"auto"` will
+# use CPU/CUDA AMP or APEX depending on the PyTorch version detected, while the other choices will force the
+# requested backend.
+half_precision_backend: auto # (`str`, *optional*, defaults to `"auto"`)
+# Whether to use full bfloat16 evaluation instead of 32-bit. This will be faster and save memory but can harm
+# metric values. This is an experimental API and it may change.
+bf16_full_eval: false # (`bool`, *optional*, defaults to `False`)
+# Whether to use full float16 evaluation instead of 32-bit. This will be faster and save memory but can harm
+# metric values.
+fp16_full_eval: false # (`bool`, *optional*, defaults to `False`)
+# Whether to enable the TF32 mode, available in Ampere and newer GPU architectures. The default value depends
+# on PyTorch's version default of `torch.backends.cuda.matmul.allow_tf32`. For more details please refer to
+# the [TF32](https://huggingface.co/docs/transformers/perf_train_gpu_one#tf32) documentation. This is an
+# experimental API and it may change.
+tf32: # (`bool`, *optional*)
+# Rank of the process during distributed training.
+local_rank: -1 # (`int`, *optional*, defaults to -1)
+# The backend to use for distributed training. Must be one of `"nccl"`, `"mpi"`, `"ccl"`, `"gloo"`, `"hccl"`.
+ddp_backend: # (`str`, *optional*)
+# When training on TPU, the number of TPU cores (automatically passed by launcher script).
+tpu_num_cores: # (`int`, *optional*)
+# Whether to drop the last incomplete batch (if the length of the dataset is not divisible by the batch size)
+# or not.
+dataloader_drop_last: false # (`bool`, *optional*, defaults to `False`)
+# Number of update steps between two evaluations if `eval_strategy="steps"`. Will default to the same
+# value as `logging_steps` if not set. Should be an integer or a float in range `[0,1)`. If smaller than 1,
+# will be interpreted as ratio of total training steps.
+eval_steps: # (`int` or `float`, *optional*)
+# Number of subprocesses to use for data loading (PyTorch only). 0 means that the data will be loaded in the
+# main process.
+dataloader_num_workers: 0 # (`int`, *optional*, defaults to 0)
+# Some models like [TransformerXL](../model_doc/transformerxl) or [XLNet](../model_doc/xlnet) can make use of
+# the past hidden states for their predictions. If this argument is set to a positive int, the `Trainer` will
+# use the corresponding output (usually index 2) as the past state and feed it to the model at the next
+# training step under the keyword argument `mems`.
+past_index: -1 # (`int`, *optional*, defaults to -1)
+# A descriptor for the run. Typically used for [wandb](https://www.wandb.com/),
+# [mlflow](https://www.mlflow.org/), [comet](https://www.comet.com/site) and [swanlab](https://swanlab.cn)
+# logging. If not specified, will be the same as `output_dir`.
+run_name: # (`str`, *optional*, defaults to `output_dir`)
+# Whether or not to disable the tqdm progress bars and table of metrics produced by
+# [`~notebook.NotebookTrainingTracker`] in Jupyter Notebooks. Will default to `True` if the logging level is
+# set to warn or lower (default), `False` otherwise.
+disable_tqdm: # (`bool`, *optional*)
+# Whether or not to automatically remove the columns unused by the model forward method.
+remove_unused_columns: true # (`bool`, *optional*, defaults to `True`)
+# The list of keys in your dictionary of inputs that correspond to the labels.
+
+# Will eventually default to the list of argument names accepted by the model that contain the word "label",
+# except if the model used is one of the `XxxForQuestionAnswering` in which case it will also include the
+# `["start_positions", "end_positions"]` keys.
+label_names: # (`List[str]`, *optional*)
+# Whether or not to load the best model found during training at the end of training. When this option is
+# enabled, the best checkpoint will always be saved. See
+# [`save_total_limit`](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments.save_total_limit)
+# for more.
+
+# <Tip>
+
+# When set to `True`, the parameters `save_strategy` needs to be the same as `eval_strategy`, and in
+# the case it is "steps", `save_steps` must be a round multiple of `eval_steps`.
+
+# </Tip>
+load_best_model_at_end: false # (`bool`, *optional*, defaults to `False`)
+# Use in conjunction with `load_best_model_at_end` to specify the metric to use to compare two different
+# models. Must be the name of a metric returned by the evaluation with or without the prefix `"eval_"`.
+
+# If not specified, this will default to `"loss"` when either `load_best_model_at_end == True`
+# or `lr_scheduler_type == SchedulerType.REDUCE_ON_PLATEAU` (to use the evaluation loss).
+
+# If you set this value, `greater_is_better` will default to `True` unless the name ends with "loss".
+# Don't forget to set it to `False` if your metric is better when lower.
+metric_for_best_model: # (`str`, *optional*)
+# Use in conjunction with `load_best_model_at_end` and `metric_for_best_model` to specify if better models
+# should have a greater metric or not. Will default to:
+
+# - `True` if `metric_for_best_model` is set to a value that doesn't end in `"loss"`.
+# - `False` if `metric_for_best_model` is not set, or set to a value that ends in `"loss"`.
+greater_is_better: # (`bool`, *optional*)
+# When resuming training, whether or not to skip the epochs and batches to get the data loading at the same
+# stage as in the previous training. If set to `True`, the training will begin faster (as that skipping step
+# can take a long time) but will not yield the same results as the interrupted training would have.
+ignore_data_skip: false # (`bool`, *optional*, defaults to `False`)
+# Use PyTorch Distributed Parallel Training (in distributed training only).
+
+# A list of options along the following:
+
+# - `"full_shard"`: Shard parameters, gradients and optimizer states.
+# - `"shard_grad_op"`: Shard optimizer states and gradients.
+# - `"hybrid_shard"`: Apply `FULL_SHARD` within a node, and replicate parameters across nodes.
+# - `"hybrid_shard_zero2"`: Apply `SHARD_GRAD_OP` within a node, and replicate parameters across nodes.
+# - `"offload"`: Offload parameters and gradients to CPUs (only compatible with `"full_shard"` and
+# `"shard_grad_op"`).
+# - `"auto_wrap"`: Automatically recursively wrap layers with FSDP using `default_auto_wrap_policy`.
+fsdp: '' # (`bool`, `str` or list of [`~trainer_utils.FSDPOption`], *optional*, defaults to `''`)
+# Config to be used with fsdp (Pytorch Distributed Parallel Training). The value is either a location of
+# fsdp json config file (e.g., `fsdp_config.json`) or an already loaded json file as `dict`.
+
+# A List of config and its options:
+# - min_num_params (`int`, *optional*, defaults to `0`):
+# FSDP's minimum number of parameters for Default Auto Wrapping. (useful only when `fsdp` field is
+# passed).
+# - transformer_layer_cls_to_wrap (`List[str]`, *optional*):
+# List of transformer layer class names (case-sensitive) to wrap, e.g, `BertLayer`, `GPTJBlock`,
+# `T5Block` .... (useful only when `fsdp` flag is passed).
+# - backward_prefetch (`str`, *optional*)
+# FSDP's backward prefetch mode. Controls when to prefetch next set of parameters (useful only when
+# `fsdp` field is passed).
+
+# A list of options along the following:
+
+# - `"backward_pre"` : Prefetches the next set of parameters before the current set of parameter's
+# gradient
+# computation.
+# - `"backward_post"` : This prefetches the next set of parameters after the current set of
+# parameter’s
+# gradient computation.
+# - forward_prefetch (`bool`, *optional*, defaults to `False`)
+# FSDP's forward prefetch mode (useful only when `fsdp` field is passed).
+# If `"True"`, then FSDP explicitly prefetches the next upcoming all-gather while executing in the
+# forward pass.
+# - limit_all_gathers (`bool`, *optional*, defaults to `False`)
+# FSDP's limit_all_gathers (useful only when `fsdp` field is passed).
+# If `"True"`, FSDP explicitly synchronizes the CPU thread to prevent too many in-flight
+# all-gathers.
+# - use_orig_params (`bool`, *optional*, defaults to `True`)
+# If `"True"`, allows non-uniform `requires_grad` during init, which means support for interspersed
+# frozen and trainable parameters. Useful in cases such as parameter-efficient fine-tuning. Please
+# refer this
+# [blog](https://dev-discuss.pytorch.org/t/rethinking-pytorch-fully-sharded-data-parallel-fsdp-from-first-principles/1019
+# - sync_module_states (`bool`, *optional*, defaults to `True`)
+# If `"True"`, each individually wrapped FSDP unit will broadcast module parameters from rank 0 to
+# ensure they are the same across all ranks after initialization
+# - cpu_ram_efficient_loading (`bool`, *optional*, defaults to `False`)
+# If `"True"`, only the first process loads the pretrained model checkpoint while all other processes
+# have empty weights.  When this setting as `"True"`, `sync_module_states` also must to be `"True"`,
+# otherwise all the processes except the main process would have random weights leading to unexpected
+# behaviour during training.
+# - activation_checkpointing (`bool`, *optional*, defaults to `False`):
+# If `"True"`, activation checkpointing is a technique to reduce memory usage by clearing activations of
+# certain layers and recomputing them during a backward pass. Effectively, this trades extra
+# computation time for reduced memory usage.
+# - xla (`bool`, *optional*, defaults to `False`):
+# Whether to use PyTorch/XLA Fully Sharded Data Parallel Training. This is an experimental feature
+# and its API may evolve in the future.
+# - xla_fsdp_settings (`dict`, *optional*)
+# The value is a dictionary which stores the XLA FSDP wrapping parameters.
+
+# For a complete list of options, please see [here](
+# https://github.com/pytorch/xla/blob/master/torch_xla/distributed/fsdp/xla_fully_sharded_data_parallel.py).
+# - xla_fsdp_grad_ckpt (`bool`, *optional*, defaults to `False`):
+# Will use gradient checkpointing over each nested XLA FSDP wrapped layer. This setting can only be
+# used when the xla flag is set to true, and an auto wrapping policy is specified through
+# fsdp_min_num_params or fsdp_transformer_layer_cls_to_wrap.
+fsdp_config: # (`str` or `dict`, *optional*)
+# Use [Deepspeed](https://github.com/deepspeedai/DeepSpeed). This is an experimental feature and its API may
+# evolve in the future. The value is either the location of DeepSpeed json config file (e.g.,
+# `ds_config.json`) or an already loaded json file as a `dict`"
+
+# <Tip warning={true}>
+# If enabling any Zero-init, make sure that your model is not initialized until
+# *after* initializing the `TrainingArguments`, else it will not be applied.
+# </Tip>
+deepspeed: # (`str` or `dict`, *optional*)
+# Config to be used with the internal `Accelerator` implementation. The value is either a location of
+# accelerator json config file (e.g., `accelerator_config.json`), an already loaded json file as `dict`,
+# or an instance of [`~trainer_pt_utils.AcceleratorConfig`].
+
+# A list of config and its options:
+# - split_batches (`bool`, *optional*, defaults to `False`):
+# Whether or not the accelerator should split the batches yielded by the dataloaders across the devices. If
+# `True` the actual batch size used will be the same on any kind of distributed processes, but it must be a
+# round multiple of the `num_processes` you are using. If `False`, actual batch size used will be the one set
+# in your script multiplied by the number of processes.
+# - dispatch_batches (`bool`, *optional*):
+# If set to `True`, the dataloader prepared by the Accelerator is only iterated through on the main process
+# and then the batches are split and broadcast to each process. Will default to `True` for `DataLoader` whose
+# underlying dataset is an `IterableDataset`, `False` otherwise.
+# - even_batches (`bool`, *optional*, defaults to `True`):
+# If set to `True`, in cases where the total batch size across all processes does not exactly divide the
+# dataset, samples at the start of the dataset will be duplicated so the batch can be divided equally among
+# all workers.
+# - use_seedable_sampler (`bool`, *optional*, defaults to `True`):
+# Whether or not use a fully seedable random sampler ([`accelerate.data_loader.SeedableRandomSampler`]). Ensures
+# training results are fully reproducible using a different sampling technique. While seed-to-seed results
+# may differ, on average the differences are negligible when using multiple different seeds to compare. Should
+# also be ran with [`~utils.set_seed`] for the best results.
+# - use_configured_state (`bool`, *optional*, defaults to `False`):
+# Whether or not to use a pre-configured `AcceleratorState` or `PartialState` defined before calling `TrainingArguments`.
+# If `True`, an `Accelerator` or `PartialState` must be initialized. Note that by doing so, this could lead to issues
+# with hyperparameter tuning.
+accelerator_config: # (`str`, `dict`, or `AcceleratorConfig`, *optional*)
+# The label smoothing factor to use. Zero means no label smoothing, otherwise the underlying onehot-encoded
+# labels are changed from 0s and 1s to `label_smoothing_factor/num_labels` and `1 - label_smoothing_factor +
+# label_smoothing_factor/num_labels` respectively.
+label_smoothing_factor: 0.0 # (`float`, *optional*, defaults to 0.0)
+# Enable one or more debug features. This is an experimental feature.
+
+# Possible options are:
+
+# - `"underflow_overflow"`: detects overflow in model's input/outputs and reports the last frames that led to
+# the event
+# - `"tpu_metrics_debug"`: print debug metrics on TPU
+
+# The options should be separated by whitespaces.
+debug: '' # (`str` or list of [`~debug_utils.DebugOption`], *optional*, defaults to `""`)
+# The optimizer to use, such as "adamw_torch", "adamw_torch_fused", "adamw_apex_fused", "adamw_anyprecision",
+# "adafactor". See `OptimizerNames` in [training_args.py](https://github.com/huggingface/transformers/blob/main/src/transformers/training_args.py)
+# for a full list of optimizers.
+optim: adamw_torch # (`str` or [`training_args.OptimizerNames`], *optional*, defaults to `"adamw_torch"`)
+# Optional arguments that are supplied to optimizers such as AnyPrecisionAdamW, AdEMAMix, and GaLore.
+optim_args: # (`str`, *optional*)
+# Whether or not to group together samples of roughly the same length in the training dataset (to minimize
+# padding applied and be more efficient). Only useful if applying dynamic padding.
+group_by_length: false # (`bool`, *optional*, defaults to `False`)
+# Column name for precomputed lengths. If the column exists, grouping by length will use these values rather
+# than computing them on train startup. Ignored unless `group_by_length` is `True` and the dataset is an
+# instance of `Dataset`.
+length_column_name: length # (`str`, *optional*, defaults to `"length"`)
+# The list of integrations to report the results and logs to. Supported platforms are `"azure_ml"`,
+# `"clearml"`, `"codecarbon"`, `"comet_ml"`, `"dagshub"`, `"dvclive"`, `"flyte"`, `"mlflow"`, `"neptune"`,
+# `"swanlab"`, `"tensorboard"`, and `"wandb"`. Use `"all"` to report to all integrations installed, `"none"`
+# for no integrations.
+report_to: # (`str` or `List[str]`, *optional*, defaults to `"all"`)
+# When using distributed training, the value of the flag `find_unused_parameters` passed to
+# `DistributedDataParallel`. Will default to `False` if gradient checkpointing is used, `True` otherwise.
+ddp_find_unused_parameters: # (`bool`, *optional*)
+# When using distributed training, the value of the flag `bucket_cap_mb` passed to `DistributedDataParallel`.
+ddp_bucket_cap_mb: # (`int`, *optional*)
+# When using distributed training, the value of the flag `broadcast_buffers` passed to
+# `DistributedDataParallel`. Will default to `False` if gradient checkpointing is used, `True` otherwise.
+ddp_broadcast_buffers: # (`bool`, *optional*)
+# Whether you want to pin memory in data loaders or not. Will default to `True`.
+dataloader_pin_memory: true # (`bool`, *optional*, defaults to `True`)
+# If True, the data loader will not shut down the worker processes after a dataset has been consumed once.
+# This allows to maintain the workers Dataset instances alive. Can potentially speed up training, but will
+# increase RAM usage. Will default to `False`.
+dataloader_persistent_workers: false # (`bool`, *optional*, defaults to `False`)
+# Number of batches loaded in advance by each worker.
+# 2 means there will be a total of 2 * num_workers batches prefetched across all workers.
+dataloader_prefetch_factor: # (`int`, *optional*)
+# Whether to skip adding of memory profiler reports to metrics. This is skipped by default because it slows
+# down the training and evaluation speed.
+skip_memory_metrics: true # (`bool`, *optional*, defaults to `True`)
+# Whether or not to push the model to the Hub every time the model is saved. If this is activated,
+# `output_dir` will begin a git directory synced with the repo (determined by `hub_model_id`) and the content
+# will be pushed each time a save is triggered (depending on your `save_strategy`). Calling
+# [`~Trainer.save_model`] will also trigger a push.
+
+# <Tip warning={true}>
+
+# If `output_dir` exists, it needs to be a local clone of the repository to which the [`Trainer`] will be
+# pushed.
+
+# </Tip>
+push_to_hub: false # (`bool`, *optional*, defaults to `False`)
+# The path to a folder with a valid checkpoint for your model. This argument is not directly used by
+# [`Trainer`], it's intended to be used by your training/evaluation scripts instead. See the [example
+# scripts](https://github.com/huggingface/transformers/tree/main/examples) for more details.
+resume_from_checkpoint: # (`str`, *optional*)
+# The name of the repository to keep in sync with the local *output_dir*. It can be a simple model ID in
+# which case the model will be pushed in your namespace. Otherwise it should be the whole repository name,
+# for instance `"user_name/model"`, which allows you to push to an organization you are a member of with
+# `"organization_name/model"`. Will default to `user_name/output_dir_name` with *output_dir_name* being the
+# name of `output_dir`.
+
+# Will default to the name of `output_dir`.
+hub_model_id: # (`str`, *optional*)
+# Defines the scope of what is pushed to the Hub and when. Possible values are:
+
+# - `"end"`: push the model, its configuration, the processing class e.g. tokenizer (if passed along to the [`Trainer`]) and a
+# draft of a model card when the [`~Trainer.save_model`] method is called.
+# - `"every_save"`: push the model, its configuration, the processing class e.g. tokenizer (if passed along to the [`Trainer`]) and
+# a draft of a model card each time there is a model save. The pushes are asynchronous to not block
+# training, and in case the save are very frequent, a new push is only attempted if the previous one is
+# finished. A last push is made with the final model at the end of training.
+# - `"checkpoint"`: like `"every_save"` but the latest checkpoint is also pushed in a subfolder named
+# last-checkpoint, allowing you to resume training easily with
+# `trainer.train(resume_from_checkpoint="last-checkpoint")`.
+# - `"all_checkpoints"`: like `"checkpoint"` but all checkpoints are pushed like they appear in the output
+# folder (so you will get one checkpoint folder per folder in your final repository)
+hub_strategy: every_save # (`str` or [`~trainer_utils.HubStrategy`], *optional*, defaults to `"every_save"`)
+# The token to use to push the model to the Hub. Will default to the token in the cache folder obtained with
+# `huggingface-cli login`.
+hub_token: # (`str`, *optional*)
+# Whether to make the repo private. If `None` (default), the repo will be public unless the organization's default is private. This value is ignored if the repo already exists.
+hub_private_repo: # (`bool`, *optional*)
+# Unless this is `True`, the `Trainer` will skip pushing a checkpoint when the previous push is not finished.
+hub_always_push: false # (`bool`, *optional*, defaults to `False`)
+# If True, use gradient checkpointing to save memory at the expense of slower backward pass.
+gradient_checkpointing: false # (`bool`, *optional*, defaults to `False`)
+# Key word arguments to be passed to the `gradient_checkpointing_enable` method.
+gradient_checkpointing_kwargs: # (`dict`, *optional*, defaults to `None`)
+# This argument is deprecated. Use `include_for_metrics` instead, e.g, `include_for_metrics = ["inputs"]`.
+include_inputs_for_metrics: false # (`bool`, *optional*, defaults to `False`)
+# Include additional data in the `compute_metrics` function if needed for metrics computation.
+# Possible options to add to `include_for_metrics` list:
+# - `"inputs"`: Input data passed to the model, intended for calculating input dependent metrics.
+# - `"loss"`: Loss values computed during evaluation, intended for calculating loss dependent metrics.
+include_for_metrics: [] # (`List[str]`, *optional*, defaults to `[]`)
+# Whether to recursively concat inputs/losses/labels/predictions across batches. If `False`,
+# will instead store them as lists, with each batch kept separate.
+eval_do_concat_batches: true # (`bool`, *optional*, defaults to `True`)
+# Whether to find a batch size that will fit into memory automatically through exponential decay, avoiding
+# CUDA Out-of-Memory errors. Requires accelerate to be installed (`pip install accelerate`)
+auto_find_batch_size: false # (`bool`, *optional*, defaults to `False`)
+# If `True`, [`enable_full_determinism`] is called instead of [`set_seed`] to ensure reproducible results in
+# distributed training. Important: this will negatively impact the performance, so only use it for debugging.
+full_determinism: false # (`bool`, *optional*, defaults to `False`)
+# If set, the backend compiler for TorchDynamo. Possible choices are `"eager"`, `"aot_eager"`, `"inductor"`,
+# `"nvfuser"`, `"aot_nvfuser"`, `"aot_cudagraphs"`, `"ofi"`, `"fx2trt"`, `"onnxrt"` and `"ipex"`.
+torchdynamo: # (`str`, *optional*)
+# The scope to use when doing hyperparameter search with Ray. By default, `"last"` will be used. Ray will
+# then use the last checkpoint of all trials, compare those, and select the best one. However, other options
+# are also available. See the [Ray documentation](
+# https://docs.ray.io/en/latest/tune/api_docs/analysis.html#ray.tune.ExperimentAnalysis.get_best_trial) for
+# more options.
+ray_scope: last # (`str`, *optional*, defaults to `"last"`)
+# The timeout for `torch.distributed.init_process_group` calls, used to avoid GPU socket timeouts when
+# performing slow operations in distributed runnings. Please refer the [PyTorch documentation]
+# (https://pytorch.org/docs/stable/distributed.html#torch.distributed.init_process_group) for more
+# information.
+ddp_timeout: 1800 # (`int`, *optional*, defaults to 1800)
+# This argument is deprecated.`mps` device will be used if it is available similar to `cuda` device.
+use_mps_device: false # (`bool`, *optional*, defaults to `False`)
+# Whether or not to compile the model using PyTorch 2.0
+# [`torch.compile`](https://pytorch.org/get-started/pytorch-2.0/).
+
+# This will use the best defaults for the [`torch.compile`
+# API](https://pytorch.org/docs/stable/generated/torch.compile.html?highlight=torch+compile#torch.compile).
+# You can customize the defaults with the argument `torch_compile_backend` and `torch_compile_mode` but we
+# don't guarantee any of them will work as the support is progressively rolled in in PyTorch.
+
+# This flag and the whole compile API is experimental and subject to change in future releases.
+torch_compile: false # (`bool`, *optional*, defaults to `False`)
+# The backend to use in `torch.compile`. If set to any value, `torch_compile` will be set to `True`.
+
+# Refer to the PyTorch doc for possible values and note that they may change across PyTorch versions.
+
+# This flag is experimental and subject to change in future releases.
+torch_compile_backend: # (`str`, *optional*)
+# The mode to use in `torch.compile`. If set to any value, `torch_compile` will be set to `True`.
+
+# Refer to the PyTorch doc for possible values and note that they may change across PyTorch versions.
+
+# This flag is experimental and subject to change in future releases.
+torch_compile_mode: # (`str`, *optional*)
+# Whether or not to compute the number of tokens per second per device for training speed metrics.
+
+# This will iterate over the entire training dataloader once beforehand,
+
+# and will slow down the entire process.
+include_tokens_per_second: false # (`bool`, *optional*)
+# Whether or not to track the number of input tokens seen throughout training.
+
+# May be slower in distributed training as gather operations must be called.
+include_num_input_tokens_seen: false # (`bool`, *optional*)
+# If not `None`, this will activate NEFTune noise embeddings. This can drastically improve model performance
+# for instruction fine-tuning. Check out the [original paper](https://arxiv.org/abs/2310.05914) and the
+# [original code](https://github.com/neelsjain/NEFTune). Support transformers `PreTrainedModel` and also
+# `PeftModel` from peft. The original paper used values in the range [5.0, 15.0].
+neftune_noise_alpha: # (`Optional[float]`)
+# The target modules to optimize, i.e. the module names that you would like to train.
+# Currently used for the GaLore algorithm (https://arxiv.org/abs/2403.03507) and APOLLO algorithm (https://arxiv.org/abs/2412.05270).
+# See GaLore implementation (https://github.com/jiaweizzhao/GaLore) and APOLLO implementation (https://github.com/zhuhanqing/APOLLO) for more details.
+# You need to make sure to pass a valid GaLore or APOLLO optimizer, e.g., one of: "apollo_adamw", "galore_adamw", "galore_adamw_8bit", "galore_adafactor" and make sure that the target modules are `nn.Linear` modules only.
+optim_target_modules: # (`Union[str, List[str]]`, *optional*)
+# If set to `True`, evaluation will call compute_metrics at the end of each batch to accumulate statistics
+# rather than saving all eval logits in memory. When set to `True`, you must pass a compute_metrics function
+# that takes a boolean argument `compute_result`, which when passed `True`, will trigger the final global
+# summary statistics from the batch-level summary statistics you've accumulated over the evaluation set.
+batch_eval_metrics: false # (`Optional[bool]`, defaults to `False`)
+# Whether to perform a evaluation step (sanity check) before the training to ensure the validation steps works correctly.
+eval_on_start: false # (`bool`, *optional*, defaults to `False`)
+# Whether to run recursively gather object in a nested list/tuple/dictionary of objects from all devices. This should only be enabled if users are not just returning tensors, and this is actively discouraged by PyTorch.
+eval_use_gather_object: false # (`bool`, *optional*, defaults to `False`)
+# Whether enable [Liger](https://github.com/linkedin/Liger-Kernel) Kernel for LLM model training.
+# It can effectively increase multi-GPU training throughput by ~20% and reduces memory usage by ~60%, works out of the box with
+# flash attention, PyTorch FSDP, and Microsoft DeepSpeed. Currently, it supports llama, mistral, mixtral and gemma models.
+use_liger_kernel: false # (`bool`, *optional*, defaults to `False`)
+# Whether or not to average tokens across devices. If enabled, will use all_reduce to synchronize
+# num_tokens_in_batch for precise loss calculation. Reference:
+# https://github.com/huggingface/transformers/issues/34242
+average_tokens_across_devices: false # (`bool`, *optional*, defaults to `False`)
