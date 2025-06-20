@@ -4,29 +4,30 @@
 	"name": "my-awesome-model",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"build": {
-		"dockerfile": "Dockerfile",
+		"dockerfile": "Dockerfile"
 		// Uncomment to use a specific build context. More info: https://containers.dev/guide/dockerfile#build-context
 		// "context": ".."
-		"args": {
-			// With same username with "remoteUser" in devcontainer.json
-			"USERNAME": "ubuntu"
-		}
 	},
 	"hostRequirements": {
 		"gpu":"optional"
 	},
 	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
+	"features": {
+		"ghcr.io/va-h/devcontainers-features/uv:1":{
+			"shellautocompletion": true,
+			"version": "latest"
+		}
+	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "uname -a",
+	"postCreateCommand": "uv sync"
 
 	// Configure tool-specific properties.
 	// "customizations": {},
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	"remoteUser": "ubuntu"
+	// "remoteUser": "vscode"
 }
