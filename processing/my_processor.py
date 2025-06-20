@@ -1,5 +1,6 @@
 from transformers import AutoTokenizer, ProcessorMixin
 
+
 class MyProcessor(ProcessorMixin):
     """
     A processor for the MyPretrainedModel that handles tokenization and other preprocessing tasks.

@@ -21,8 +21,8 @@ def load_tf_weights(model: PreTrainedModel, config: PretrainedConfig, path: str 
 
 
 class MyPretrainedModel(PreTrainedModel):
-    
-    ## Class attributes
+
+    # Class attributes
     # (PretrainedConfig) — A subclass of PretrainedConfig to use as configuration class for this model architecture.
     config_class = MyPretrainedModelConfig
     # (Callable) — A python method for loading a TensorFlow checkpoint in a PyTorch model, taking as arguments:

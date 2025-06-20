@@ -1,5 +1,6 @@
 from torch.utils.data import Dataset, DataLoader
 
+
 class ExampleDataset(Dataset):
     """
     Example dataset class for demonstration purposes.
@@ -35,7 +36,7 @@ class ExampleDataset(Dataset):
             Any: The sample at the specified index.
         """
         return self.data[idx]
-    
+
 
 example_data_loader = DataLoader(
     ExampleDataset(data=[{"text": "example text", "label": 0}]),
