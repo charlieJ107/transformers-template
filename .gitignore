@@ -12,5 +12,4 @@ wheels/
 .env
 .env.local
 
-/data/** 
-!/data/.gitkeep
+!.gitkeep
