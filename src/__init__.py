@@ -1,1 +1,0 @@
-__name__ = "my_model"

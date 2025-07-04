@@ -6,5 +6,5 @@ RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86
     && rm cuda-keyring.deb\
     && sudo apt update \
     && sudo apt install -y cuda-toolkit build-essential git curl wget \
-    && sudo apt clean && sudo rm -rf /var/lib/apt/lists/*
+    && sudo apt clean && sudo rm -rf /var/lib/apt/lists/* 
  

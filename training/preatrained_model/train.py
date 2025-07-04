@@ -3,13 +3,12 @@ from datasets import load_dataset
 
 from models.pretrained_model.pretrained_model import MyPretrainedModel
 from models.pretrained_model.pretrained_model_config import MyPretrainedModelConfig
-from dataloaders.example_dataloader import ExampleDataset
+from datasets.example_dataset import ExampleDataset
 from processing.my_processor import MyProcessor
 from utils import load_training_args
 
+
 # Load training arguments from a YAML file
-
-
 training_args = TrainingArguments(**load_training_args("config/training_args.yaml"))
 
 model_config = MyPretrainedModelConfig(

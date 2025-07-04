@@ -1,0 +1,19 @@
+name: my-project
+version: 0.1.0
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - matplotlib
+  - transformers
+  - accelerate
+  - nltk
+  - datasets
+  - peft
+  - jupyter
+  - flash-attn
+  - pytorch
+  - toml
+  - seaborn
+prefix: .conda
